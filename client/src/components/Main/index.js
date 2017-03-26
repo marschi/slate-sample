@@ -3,29 +3,84 @@ import { Editor } from 'slate'
 import { observer } from 'mobx-react';
 import Popover from 'react-popover';
 import classnames from 'classnames'
-import { Icon } from '../helpers';
+import { Icon, noop } from '../helpers';
 import { } from './styles.scss';
 import schema from './schema'
 
-const marks = [
+
+const markIcons = [
   ['bold', 'bold'],
   ['code', 'code'],
   ['italic', 'italic'],
   ['underlined', 'underline'],
+];
+
+const blockIcons = [
+  ['blockquote', 'quote-left'],
   ['heading', 'header']
 ];
 
-const getSelectionPosition = () => {
-  try {
-    const rect = window.getSelection().getRangeAt(0).getBoundingClientRect();
-    return {
-      left: rect.left + rect.width/2,
-      top: rect.top
-    }
-  } catch (e) {
-    return;
-  }
-}
+const generateButtons = (onClick = noop, isActive = noop) => ([type, icon], i) => (
+  <MarkButton
+    key={i}
+    icon={icon}
+    isActive={isActive(type)}
+    onClick={() => onClick(type)}
+  />
+);
+
+const hasType = set => type => set.some(set => set.type === type);
+
+const MarkBar = ({
+  isOpen,
+  position,
+  selectionMarks,
+  selectionBlocks,
+  onClickMark = noop,
+  onClickBlock = noop,
+}) => {
+  const popoverBody = (
+    <div className="popover-content">
+      <div className="icon-group mark-icons">
+        {markIcons.map(generateButtons(onClickMark), hasType(selectionMarks))}
+      </div>
+      { true &&
+        <div className="icon-group block-icons">
+          {blockIcons.map(generateButtons(onClickBlock, hasType(selectionBlocks)))}
+        </div>
+      }
+    </div>
+  );
+  return (
+    <Popover isOpen={isOpen} body={popoverBody}>
+      <span className="popover-dummy" style={position} />
+    </Popover>
+  );
+};
+
+const MarkButton = ({ icon, onClick = noop, isActive }) => (
+  <span onMouseDown={e => e.preventDefault() || onClick() }>
+    <Icon
+      className={classnames('mark-icon', { 'active': isActive })}
+      type={icon}
+    />
+  </span>
+);
+
+const MediaIcons = ({
+  selectionPosition = { top: -100 },
+  isExpanded,
+  onClickExpand = noop,
+  onClickMediaIcon = noop,
+  icons
+}) => (
+  <div className={classnames('media-icons', { 'is-expanded': isExpanded })} style={{top: selectionPosition.top }}>
+    <span onClick={e => e.preventDefault() || onClickExpand()}>
+      <Icon className="expand-button" type="plus-circle" />
+    </span>
+  </div>
+);
+
 
 @observer
 export default class Main extends React.PureComponent {
@@ -34,24 +89,35 @@ export default class Main extends React.PureComponent {
     store.doMaybeInsertLink(text);
   }
 
-  onKeyDown = (e, { key }) => {
+  getOverlay = () => {
+    const { store } = this.props;
+    const { isBlurred, isCollapsed, startBlock, endBlock } = store.slateState;
+    const { selectionPosition } = store;
+    return (
+      <div className="overlay">
+        <MarkBar
+          isOpen={!isBlurred && !isCollapsed}
+          position={selectionPosition}
+          selectionMarks={store.slateState.marks}
+          selectionBlocks={store.slateState.blocks}
+          onClickMark={store.doToggleMark}
+          onClickBlock={store.doSetBlockType}
+        />
+      </div>
+    )
 
   }
 
   render() {
     const { store } = this.props;
-    const { isBlurred, isCollapsed } = store.slateState;
     return (
       <div className="container">
-        <div className="row vertical-spacer" />
+        { this.getOverlay() }
+        <div className="row instructions">
+          <h1 className="col-sm-12">How to</h1>
+          <p className="col-sm-12">Mark text to show the hovering menu. Paste a link to create a preview.</p>
+        </div>
         <div className="row">
-          <MarkBar
-            isOpen={!isBlurred && !isCollapsed}
-            position={getSelectionPosition()}
-            marks={marks}
-            selectionMarks={store.slateState.marks}
-            onClickMark={store.doToggleMark}
-          />
           <div
             className="editor-container"
             >
@@ -69,31 +135,3 @@ export default class Main extends React.PureComponent {
   }
 
 }
-
-const hasMark = (marks, type) => marks.some(mark => mark.type == type);
-
-const MarkBar = ({ isOpen, position, marks, selectionMarks, onClickMark, children }) => {
-  const popoverBody = (
-    <div className="popover-content">
-      {marks.map(([type, icon], i) => (
-        <MarkButton isActive={hasMark(selectionMarks, type)} key={i} icon={icon} onClick={() => onClickMark(type)} />
-      ))}
-    </div>
-  );
-  return (
-    <Popover isOpen={isOpen} body={popoverBody}>
-      <span className="popover-dummy" style={position} />
-    </Popover>
-  );
-}
-
-
-
-const MarkButton = ({ icon, onClick, isActive }) => (
-  <span onMouseDown={e => e.preventDefault() || onClick() }>
-    <Icon
-      className={classnames('mark-icon', { 'active': isActive })}
-      type={icon}
-    />
-  </span>
-);

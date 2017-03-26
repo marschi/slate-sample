@@ -1,18 +1,21 @@
+@import '../../variables';
 
-$popover-bg-color: black;
-$popover-text-color: white;
-$popover-text-color-active: rgb(0, 213, 194);
-$editor-text-color: rgb(47, 47, 47);
-$editor-font-size: 16pt;
-
-.vertical-spacer {
-  height: 200px;
+.instructions {
+  margin: 100px 0;
+  color: lightgrey;
+  text-align: center;
 }
 
 .editor-container {
   width: 100%;
   color: $editor-text-color;
   font-size: $editor-font-size;
+}
+
+.editor-container {
+  p {
+    min-height: $editor-font-size;
+  }
 }
 
 .popover-dummy {
@@ -23,6 +26,16 @@ $editor-font-size: 16pt;
   background-color: $popover-bg-color;
   border-radius: 3px;
   color: $popover-text-color;
+  display: table;
+}
+
+.popover-content {
+  .icon-group {
+    display: table-cell;
+  }
+  .icon-group:not(:first-child) {
+    border-left: 1px solid rgb(89, 89, 89);
+  }
 }
 
 .popover-content {
@@ -37,5 +50,49 @@ $editor-font-size: 16pt;
   }
   .mark-icon.active:hover {
     text-shadow: 0 0 10px $popover-text-color-active;
+  }
+}
+
+.overlay {
+  position: fixed;
+  left: 0;
+  top: 0;
+}
+
+
+.editor-container {
+  blockquote {
+    color: rgb(97, 97, 97);
+    font-style: italic;
+    font-size: 1.25 * $editor-font-size;
+    border-left: 10px solid #ccc;
+    margin: 1.5em 10px;
+    padding: 0.5em 10px;
+    quotes: "\0022" "\0022" "\0022" "\0022";
+  }
+  blockquote:before {
+    content: open-quote;
+    margin-right: 0.25em;
+  }
+  blockquote:after {
+    content: close-quote;
+    margin-left: 0.25em;
+  }
+  blockquote p {
+    display: inline;
+  }
+}
+
+
+.editor-container {
+  pre {
+    font-family: monospace;
+    background-color: #fff;
+    width: em(440);
+    margin: 4em auto;
+    padding: 0.5em;
+    border-radius: .25em;
+    box-shadow: .1em .1em .5em rgba(0,0,0,.45);
+    line-height: 0;
   }
 }

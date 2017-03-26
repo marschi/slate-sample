@@ -1,11 +1,11 @@
 import React from 'react';
 
-export const Icon = ({ className, type }) => (
+export const Icon = ({ className = '', type }) => (
   <i className={`fa fa-${type} ${className}`} aria-hidden="true"></i>
 );
 
 export function wrap(Tag) {
-  return ({ children }) => <Tag>{children}</Tag>
+  return ({ attributes = {}, children }) => <Tag {...attributes}>{children}</Tag>
 }
 
 export function GetWordByPos(str, pos) {
@@ -17,3 +17,5 @@ export function GetWordByPos(str, pos) {
 
     return left + right;
 }
+
+export const noop = () => undefined;

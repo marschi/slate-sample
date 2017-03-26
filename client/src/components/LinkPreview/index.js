@@ -3,6 +3,7 @@ import axios from 'axios';
 import invariant from 'invariant';
 import classnames from 'classnames';
 import { } from './styles.scss';
+import { Icon, noop } from '../helpers';
 
 export default class LinkPreview extends React.PureComponent {
 
@@ -46,17 +47,17 @@ export default class LinkPreview extends React.PureComponent {
       videos,
       audios
     } = previewData || {};
-    const { link, isFocused } = this.props;
+    const { link, isFocused, onClickClose } = this.props;
 
     if (loadFailed) return null;
 
     return (
-      <LinkPreviewView {...{ loading, title, description, link, images}} />
+      <LinkPreviewView {...{ loading, title, description, link, images, onClickClose}} />
     )
   }
 }
 
-const LinkPreviewView = ({ isFocused, loading, title, description, link, images = []}) => {
+const LinkPreviewView = ({ isFocused, loading, title, description, link, images = [], onClickClose = noop }) => {
 
   if (loading) {
     return (
@@ -66,6 +67,9 @@ const LinkPreviewView = ({ isFocused, loading, title, description, link, images 
 
   return (
     <div className={classnames('link-preview', { 'is-focused': isFocused })}>
+      <span onClick={e => e.preventDefault() || onClickClose()} className="close-button">
+        <Icon type="times" />
+      </span>
       <div className="link-text-box">
         <h4>{title}</h4>
         <p>{description}</p>

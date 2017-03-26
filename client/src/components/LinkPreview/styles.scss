@@ -13,8 +13,16 @@
     padding: 10px;
   }
 
-  .link-footer {
+  .close-button {
+    position: absolute;
+    padding: 10px;
+    right: 0;
+    top: 0;
+    z-index: 2;
+  }
 
+  .close-button:hover {
+    color: rgb(61, 61, 61);
   }
 
 }

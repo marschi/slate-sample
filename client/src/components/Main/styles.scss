@@ -1,0 +1,41 @@
+
+$popover-bg-color: black;
+$popover-text-color: white;
+$popover-text-color-active: rgb(0, 213, 194);
+$editor-text-color: rgb(47, 47, 47);
+$editor-font-size: 16pt;
+
+.vertical-spacer {
+  height: 200px;
+}
+
+.editor-container {
+  width: 100%;
+  color: $editor-text-color;
+  font-size: $editor-font-size;
+}
+
+.popover-dummy {
+  position: fixed;
+}
+
+.popover-content {
+  background-color: $popover-bg-color;
+  border-radius: 3px;
+  color: $popover-text-color;
+}
+
+.popover-content {
+  .mark-icon {
+    padding: 0px 10px;
+  }
+  .mark-icon:hover {
+    text-shadow: 0 0 10px white;
+  }
+  .mark-icon.active {
+    color: $popover-text-color-active;
+  }
+  .mark-icon.active:hover {
+    text-shadow: 0 0 10px $popover-text-color-active;
+  }
+}

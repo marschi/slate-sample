@@ -39,5 +39,5 @@ jspm_packages
 .DS_Store
 
 #project stuff
-bin/
+#bin/
 yarn.lock

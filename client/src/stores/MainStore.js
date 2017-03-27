@@ -77,7 +77,8 @@ export default class MainStore {
     } else {
       transform = transform.insertText(text);
     }
-    this.slateState = transform.apply();
+    // this.slateState = transform.apply();
+    return transform.apply();
   }
 
   @action('Remove link preview')

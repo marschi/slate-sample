@@ -85,8 +85,8 @@ const MediaIcons = ({
 @observer
 export default class Main extends React.PureComponent {
 
-  onPaste = (e, { text }) => {
-    store.doMaybeInsertLink(text);
+  onPaste = (e, { text }, state) => {
+    return store.doMaybeInsertLink(text);
   }
 
   getOverlay = () => {

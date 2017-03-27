@@ -29,7 +29,7 @@ const generateButtons = (onClick = noop, isActive = noop) => ([type, icon], i) =
   />
 );
 
-const hasType = set => type => set.some(set => set.type === type);
+const hasType = set => type => set.some(entry => entry.type === type);
 
 const MarkBar = ({
   isOpen,
@@ -42,7 +42,7 @@ const MarkBar = ({
   const popoverBody = (
     <div className="popover-content">
       <div className="icon-group mark-icons">
-        {markIcons.map(generateButtons(onClickMark), hasType(selectionMarks))}
+        {markIcons.map(generateButtons(onClickMark, hasType(selectionMarks)))}
       </div>
       { true &&
         <div className="icon-group block-icons">
@@ -86,7 +86,7 @@ const MediaIcons = ({
 export default class Main extends React.PureComponent {
 
   onPaste = (e, { text }, state) => {
-    return store.doMaybeInsertLink(text);
+    store.doMaybeInsertLink(text);
   }
 
   getOverlay = () => {
